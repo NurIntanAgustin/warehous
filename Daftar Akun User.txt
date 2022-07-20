@@ -1,9 +1,0 @@
-keterangan akun user
-
-1. Konsumen
-email: jake@gmail.com
-pass: shimjake
-
-2. Admin
-email: jungwon@gmail.com
-pass: yangjungwon
