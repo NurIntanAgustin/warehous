@@ -14,9 +14,17 @@ class LogistikModel extends CI_Model
 
     public function get_all_data_logistik()
     {
-        $query = "SELECT l.*, r.*, p.nama_paket, pg.nama_pengiriman FROM logistik l, resi r, jenis_paket p, jenis_pengiriman pg 
+    	return $this->db
+    		->select('l.*, r.*, p.nama_paket, pg.nama_pengiriman')
+    		->from('logistik l')
+    		->join('resi r', 'r.resi_id = l.resi_id')
+    		->join('jenis_paket p', 'p.paket_id = r.paket_id')
+    		->join('jenis_pengiriman pg', 'pg.pengiriman_id = r.pengiriman_id')
+    		->get()
+    		->result_array();
+        /*$query = "SELECT l.*, r.*, p.nama_paket, pg.nama_pengiriman FROM logistik l, resi r, jenis_paket p, jenis_pengiriman pg 
         WHERE l.resi_id = r.resi_id AND r.paket_id = p.paket_id AND r.pengiriman_id = pg.pengiriman_id";
-        return $this->db->query($query)->result_array();
+        return $this->db->query($query)->result_array();*/
     }
 
     function logistik_list()
