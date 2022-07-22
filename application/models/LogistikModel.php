@@ -27,19 +27,25 @@ class LogistikModel extends CI_Model
         return $this->db->query($query)->result_array();*/
     }
 
-    function logistik_list()
+    function logistik_list($where = null)
 	{
-		// **
-		// where condition
-		$where = array();
-		$where['user_id'] = $this->session->userdata()['user_id'];
-
-		$this->db->select('logistik.*');
-		$this->db->where($where);
+		if ($where) $this->db->where($where);
+		return $this->db
+			->select('l.*, r.*, pg.nama_pengiriman, p.nama_paket')
+			->from('logistik l')
+			->join('resi r', 'r.resi_id = l.resi_id', 'left')
+			->join('jenis_pengiriman pg', 'pg.pengiriman_id = r.pengiriman_id', 'left')
+			->join('jenis_paket p', 'p.paket_id = r.paket_id', 'left')
+			->where('r.user_id', $this->session->userdata()['user_id'])
+			// ->group_by('box') // yakin ini group by 'box'?
+			->order_by('r.created_at', 'desc')
+			->get()
+			->result_array();
+		/*$this->db->where($where);
 		$this->db->group_by('box');
 		$this->db->order_by('created_at', 'desc');
 		$q = $this->db->get('logistik');
-		return $result = $q->num_rows() > 0 ? $q->result_array() : array();
+		return $result = $q->num_rows() > 0 ? $q->result_array() : array();*/
 	}
 
 	function logistik_get_list($where = null)

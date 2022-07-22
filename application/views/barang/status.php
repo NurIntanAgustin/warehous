@@ -30,7 +30,7 @@
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">BOX <?= $status['box']; ?> <?= $status['nama_pengiriman']; ?> - <?= $status['nama_paket']; ?></h5>
-                            <p class="card-text">(<a href="https://www.posindonesia.co.id/en/tracking/<?= $status['resi_pengiriman']; ?>"><?= $status['resi_pengiriman']; ?></a>) - <?= $status['status']; ?></p>
+                            <p class="card-text">(<a target='blank' href="https://www.posindonesia.co.id/en/tracking/<?= $status['resi_pengiriman']; ?>"><?= $status['resi_pengiriman']; ?></a>) - <?= $status['status']; ?></p>
                         </div>
                     </div>
 					<?php endforeach ?>

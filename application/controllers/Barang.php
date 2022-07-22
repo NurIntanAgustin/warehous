@@ -40,17 +40,45 @@ class Barang extends CI_Controller
 
     public function simpanresi()
 	{
-		$data = [
-			'nama_barang' => $this->input->post('nama_barang'),
-			'resi' => $this->input->post('resi'),
-			'tgl_kirim' => $this->input->post('tgl_kirim'),
-            'paket_id' => $this->input->post('paket_id'),
-			'pengiriman_id' => $this->input->post('pengiriman_id'),
-            'gambar_barang' => $this->input->post('gambar_barang'),
-		];
-		$this->db->insert('resi', $data);
+        try {
+            $data = [
+                'user_id' => $this->session->userdata('user_id'),
+                'nama_barang' => $this->input->post('nama_barang'),
+                'jumlah_barang' => $this->input->post('jumlah_barang'),
+                'resi' => $this->input->post('resi'),
+                'tgl_kirim' => $this->input->post('tgl_kirim'),
+                'paket_id' => $this->input->post('paket_id'),
+                'pengiriman_id' => $this->input->post('pengiriman_id'),
+            ];
 
-		redirect('barang/resi');
+            // **
+            // upload image
+            $config['upload_path'] = 'assets/img/activity/resi_konsumen/';
+            $config['allowed_types'] = 'gif|jpg|png';
+            $config['max_size']  = '100';
+            
+            $this->load->library('upload', $config);
+            
+            if (!$this->upload->do_upload('gambar_barang')) {
+                $this->session->set_flashdata('form', $data);
+                throw new Exception($this->upload->display_errors());
+            } else {
+                $uploaded_image = array('upload_data' => $this->upload->data());
+            }
+            // end of upload image
+            // **
+            
+            // add the rest of the data to the insert object
+            $data['tgl_kirim'] = date('Y-m-d', strtotime($this->input->post('tgl_kirim')));
+            $data['gambar_barang'] = $uploaded_image['upload_data']['file_name'];
+
+            // set flashdata when successfully insert the resi
+            if ($this->db->insert('resi', $data)) $this->session->set_flashdata('resi_uploaded', 1);
+        } catch (Exception $e) {
+            $this->session->set_flashdata('resi_uploaded', 2);
+            $this->session->set_flashdata('resi_failed_message', $e->getMessage());
+        }
+        redirect('barang/resi');
 	}
 
     public function tagihan()
@@ -81,22 +109,22 @@ class Barang extends CI_Controller
         $data['user'] = $this->user;
         $data['title'] = "Status";
 
-                // **
+        /*// **
 		// where condition for getting pesanan list
 		$where = array();
-		$where['logistik.user_id'] = $this->session->userdata()['user_id'];
+		$where['logistik.user_id'] = $this->session->userdata()['user_id'];*/
 
         // **
 		// data to show on page
-		$data['logistik_list'] = $this->lm->logistik_list($where);
-        $data['resi_list'] = $this->rm->resi_get_list();
+		$data['logistik_list'] = $this->lm->logistik_list();
+        // $data['resi_list'] = $this->rm->resi_get_list();
 
         $this->load->view('templates/header', $data);
         $this->load->view('barang/status', $data);
         $this->load->view('templates/footer');
     }
 
-    public function detail_status()
+    public function detail_status($resi_id)
     {
         $data['allstatus'] = $this->lm->get_all_data_logistik();
         $data['user'] = $this->user;
@@ -105,12 +133,14 @@ class Barang extends CI_Controller
         // **
 		// where condition for getting pesanan list
 		$where = array();
-		$where['logistik.user_id'] = $this->session->userdata()['user_id'];
+		$where['r.resi_id'] = $resi_id;
 
         // **
 		// data to show on page
-		$data['logistik_list'] = $this->lm->logistik_list($where);
-        $data['resi_list'] = $this->rm->resi_get_list();
+		$detail_status_list = $this->lm->logistik_list($where);
+        $data['status'] = count($detail_status_list) > 0 ? $detail_status_list[0] : array();
+
+        // $data['resi_list'] = $this->rm->resi_get_list();
 
         $this->load->view('templates/header', $data);
         $this->load->view('barang/detail_status', $data);
