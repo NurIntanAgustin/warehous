@@ -9,8 +9,13 @@ class MetodePembayaranModel extends CI_Model
 
     public function get_all_data_metode()
     {
-        $query = "SELECT * FROM metode_pembayaran";
-        return $this->db->query($query)->result_array();
+    	return $this->db
+    		->select('*')
+    		->from('metode_pembayaran')
+    		->get()
+    		->result_array();
+        /*$query = "SELECT * FROM metode_pembayaran";
+        return $this->db->query($query)->result_array();*/
     }
 
 }

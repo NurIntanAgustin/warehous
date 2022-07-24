@@ -65,6 +65,7 @@ $route['barang/status'] = 'barang/status';
 $route['barang/detail_status'] = 'barang/detail_status';
 $route['barang/tagihan'] = 'barang/tagihan';
 $route['barang/detail_tagihan'] = 'barang/detail_tagihan';
+$route['barang/upload-bukti'] = 'barang/upload_bukti_transfer';
 
 $route['admin/data_user'] = 'admin/index';
 $route['admin/data_barang'] = 'admin/barang';

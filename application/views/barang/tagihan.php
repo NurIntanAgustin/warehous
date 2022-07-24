@@ -26,7 +26,7 @@
 									No Resi : <?= $tagihan['resi']; ?>
 								</div>
 								<div class="col text-right">
-									<a href="<?= base_url('barang/detail_tagihan') ?>" class="btn btn-dark">Detail</a>
+									<a href="<?= base_url('barang/detail_tagihan/'.$tagihan['tagihan_id']) ?>" class="btn btn-dark">Detail</a>
 								</div>
 							</div>
                         </div>
@@ -41,6 +41,7 @@
 							</div>
                         </div>
                     </div>
+                    <br>
 					<?php
 						}
 					?>

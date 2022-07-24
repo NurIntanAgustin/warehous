@@ -14,6 +14,7 @@ class Barang extends CI_Controller
         $this->load->model('TarifModel', 'tm');
         $this->load->model('FeeModel', 'fm');
         $this->load->model('TagihanModel', 'tgm');
+        $this->load->model('MetodePembayaranModel', 'metode_pembayaran_model');
 
         // **
 		// get user session
@@ -55,7 +56,7 @@ class Barang extends CI_Controller
             // upload image
             $config['upload_path'] = 'assets/img/activity/resi_konsumen/';
             $config['allowed_types'] = 'gif|jpg|png';
-            $config['max_size']  = '100';
+            $config['max_size']  = '2000';
             
             $this->load->library('upload', $config);
             
@@ -83,7 +84,7 @@ class Barang extends CI_Controller
 
     public function tagihan()
     {
-        $data['alltagihan'] = $this->tgm->get_all_data_tagihan();
+        $data['alltagihan'] = $this->tgm->get_all_data_tagihan(array('r.user_id' => $this->session->userdata('user_id')));
         $data['title'] = "Tagihan";
         $data['user'] = $this->user;
 
@@ -92,15 +93,53 @@ class Barang extends CI_Controller
         $this->load->view('templates/footer');
     }
 
-    public function detail_tagihan()
+    public function detail_tagihan($tagihan_id)
     {
-        $data['alltagihan'] = $this->tgm->get_all_data_tagihan();
+        $data['alltagihan'] = $this->tgm->get_all_data_tagihan(array('tg.tagihan_id' => $tagihan_id));
+        $data['metode_pembayaran_list'] = $this->metode_pembayaran_model->get_all_data_metode();
         $data['user'] = $this->user;
         $data['title'] = "Tagihan";
 
         $this->load->view('templates/header', $data);
         $this->load->view('barang/detail_tagihan', $data);
         $this->load->view('templates/footer');
+    }
+
+    function upload_bukti_transfer()
+    {
+        $tagihan_id = $this->input->post('tagihan_id');
+        try {
+            // get detail tagihan
+            $tagihan_list = $this->tgm->get_all_data_tagihan(array('tg.tagihan_id' => $tagihan_id));
+            if (count($tagihan_list) < 1) throw new Exception('Tagihan dengan id tersebut tidak ada', 400);
+            $tagihan_details = $tagihan_list[0];
+
+            $config['upload_path'] = 'assets/img/activity/bukti_transfer_konsumen/';
+            $config['allowed_types'] = 'gif|jpg|png';
+            $config['max_size']  = '2000'; // +- 2 MB
+            $config['file_name']  = 'bukti_tf_'.$tagihan_details['resi'];
+            $config['overwrite']  = TRUE;
+
+            $this->load->library('upload', $config);
+            
+            if ( ! $this->upload->do_upload('bukti_tf')){
+                $this->session->set_flashdata('form', $data);
+                throw new Exception($this->upload->display_errors());
+            }
+            else{
+                $uploaded_image = array('upload_data' => $this->upload->data());
+            }
+
+            // where condition to update  table
+            $this->db->where('tagihan_id', $tagihan_id);
+
+            // set flashdata when successfully update
+            if ($this->db->update('tagihan', array('bukti_tf' => $config['file_name'].$uploaded_image['upload_data']['file_ext']))) $this->session->set_flashdata('bukti_tf_uploaded', 1);
+        } catch (Exception $e) {
+            $this->session->set_flashdata('bukti_tf_uploaded', 2);
+            $this->session->set_flashdata('bukti_tf_failed_message', $e->getMessage());
+        }
+        redirect('barang/detail_tagihan/'.$tagihan_id);
     }
 
     public function status()
