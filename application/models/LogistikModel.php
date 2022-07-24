@@ -12,8 +12,9 @@ class LogistikModel extends CI_Model
 	public $gambar_arriver_kr;
 	public $gambar_arriver_ina;
 
-    public function get_all_data_logistik()
+    public function get_all_data_logistik(array $where = NULL)
     {
+    	if ($where) $this->db->where($where);
     	return $this->db
     		->select('l.*, r.*, p.nama_paket, pg.nama_pengiriman')
     		->from('logistik l')
@@ -46,16 +47,6 @@ class LogistikModel extends CI_Model
 		$this->db->order_by('created_at', 'desc');
 		$q = $this->db->get('logistik');
 		return $result = $q->num_rows() > 0 ? $q->result_array() : array();*/
-	}
-
-	function logistik_get_list($where = null)
-	{
-		$this->db->join('resi', 'resi.resi_id = logistik.resi_id', 'left');
-		if ($where) {
-			$this->db->where($where);
-		}
-		$q = $this->db->get('logistik');
-		return $result = $q->num_rows() > 0 ? $q->result_array() : array();
 	}
 
 }

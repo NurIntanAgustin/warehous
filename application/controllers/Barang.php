@@ -84,7 +84,19 @@ class Barang extends CI_Controller
 
     public function tagihan()
     {
-        $data['alltagihan'] = $this->tgm->get_all_data_tagihan(array('r.user_id' => $this->session->userdata('user_id')));
+        // **
+        // alltagihan where condition
+        $where = array();
+        $where['r.user_id'] = $this->session->userdata('user_id');
+        $where['tg.status_tf !='] = 'Pembayaran Berhasil';
+        $data['alltagihan'] = $this->tgm->get_all_data_tagihan($where);
+
+        // **
+        // riwayat_tagihan where condition
+        unset($where['tg.status_tf !=']);
+        $where['tg.status_tf'] = 'Pembayaran Berhasil';
+        $data['riwayat_tagihan'] = $this->tgm->get_all_data_tagihan($where);
+
         $data['title'] = "Tagihan";
         $data['user'] = $this->user;
 
@@ -144,7 +156,19 @@ class Barang extends CI_Controller
 
     public function status()
     {
-        $data['allstatus'] = $this->lm->get_all_data_logistik();
+        // **
+        // alltagihan where condition
+        $where = array();
+        $where['r.user_id'] = $this->session->userdata('user_id');
+        $where['l.status !='] = 'Tiba di Warehouse Indonesia';
+        $data['allstatus'] = $this->lm->get_all_data_logistik($where);
+        // **
+        // riwayat_tagihan where condition
+        unset($where['l.status !=']);
+        $where['l.status'] = 'Tiba di Warehouse Indonesia';
+
+        $data['riwayat_pengiriman'] = $this->lm->get_all_data_logistik($where);
+
         $data['user'] = $this->user;
         $data['title'] = "Status";
 
@@ -155,7 +179,7 @@ class Barang extends CI_Controller
 
         // **
 		// data to show on page
-		$data['logistik_list'] = $this->lm->logistik_list();
+		// $data['logistik_list'] = $this->lm->logistik_list();
         // $data['resi_list'] = $this->rm->resi_get_list();
 
         $this->load->view('templates/header', $data);
