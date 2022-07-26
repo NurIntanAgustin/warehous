@@ -75,3 +75,5 @@ $route['admin/data_tarif'] = 'admin/tarif';
 $route['admin/data_fee'] = 'admin/fee';
 $route['admin/data_metode'] = 'admin/metode_pembayaran';
 $route['admin/data_link'] = 'admin/link';
+
+$route['admin/cari/(:any)'] = 'admin/cari/$1';

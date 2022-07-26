@@ -184,13 +184,34 @@
                         <h1 class="h3 mb-0 text-gray-800"><?= $title; ?></h1>
                     </div>
                     <hr class="mb-4">
+
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Cari Kategori:
+                                <span id="search_category"></span>
+                            </button>
+                            <div class="search-category-itemlist dropdown-menu">
+                                <a class="search-category-item dropdown-item" data-search_by="status_pengiriman">Status</a>
+                                <a class="search-category-item dropdown-item" data-search_by="resi_barang">Resi Barang</a>
+                                <a class="search-category-item dropdown-item" data-search_by="resi_pengiriman">Resi Pengiriman</a>
+                            </div>
+                        </div>
+                        <input type="text" id='search_keyword' class="form-control bg-light border-0 small" placeholder="cari berdasarkan" aria-label="Search" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-dark" type="button">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="row mt-3">
                         <div class="col-3">
                             <a href="<?= base_url('admin/logistik_create') ?>" class="btn btn-primary btn-sm">Tambah Data</a>
                         </div>
                     </div>
 
-                    <div class="table-responsive">
+                    <div id="tabel_pengiriman" class="table-responsive">
                         <table class="table mt-3">
                             <thead>
                                 <tr>
@@ -277,6 +298,8 @@
         </div>
     </div>
 
+    <input type="hidden" name="base_url" value="<?= base_url(); ?>">
+
     <!-- Bootstrap core JavaScript-->
     <script src="<?= base_url() ?>assets/admin/vendor/jquery/jquery.min.js"></script>
     <script src="<?= base_url() ?>assets/admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -293,6 +316,35 @@
     <!-- Page level custom scripts -->
     <script src="<?= base_url() ?>assets/admin/js/demo/chart-area-demo.js"></script>
     <script src="<?= base_url() ?>assets/admin/js/demo/chart-pie-demo.js"></script>
+
+    <script type="text/javascript">
+        var search_by,
+            base_url = $("[name='base_url']").val();
+        
+        $(document).on('click', '.search-category-item', function() {
+            search_by = $(this).data('search_by').toLowerCase();
+            $('span#search_category').html($(this).text());
+            $('#search_keyword').select().focus();
+        });
+
+        $(document).on('keypress', '#search_keyword', function(event) {
+            if (event.code.toLowerCase() == 'enter' && search_by != undefined) {
+                let search_keyword = $(this).val();
+
+                $.ajax({
+                    url: base_url + 'admin/cari/' + search_by,
+                    type: 'POST',
+                    data: { 'keyword': search_keyword },
+                    success: function(resp){
+                        $('#tabel_pengiriman').html(resp);
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
+            }
+        })
+    </script>
 
 </body>
 

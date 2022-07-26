@@ -65,7 +65,7 @@
 							Tarif Kirim dan Pajak
 					</div>
 					<div class="col text-right">
-						Rp<?= number_format($tagihan['tarif'],2,',','.'); ?>/gr
+						Rp<?= number_format($tagihan['tarif'] ?: 0, 0,',','.'); ?>/gr
 					</div>
 				</div>
                 <div class="row mb-2">
@@ -73,7 +73,7 @@
 							Fee Warehouse 
 					</div>
 					<div class="col text-right">
-						Rp<?= number_format($tagihan['fee'],2,',','.'); ?>
+						Rp<?= number_format($tagihan['fee'] ?: 0, 0,',','.'); ?>
 					</div>
 				</div>
                 <div class="row mb-2">
@@ -89,7 +89,7 @@
 							Jumlah Yang Harus Dibayar 
 					</div>
 					<div class="col text-right">
-                        Rp<?= number_format($tagihan['jumlah'],2,',','.'); ?>
+                        Rp<?= number_format($tagihan['jumlah'] ?: 0, 0,',','.'); ?>
 					</div>
 				</div>
                 <div class="row mb-2">

@@ -12,9 +12,10 @@ class LogistikModel extends CI_Model
 	public $gambar_arriver_kr;
 	public $gambar_arriver_ina;
 
-    public function get_all_data_logistik(array $where = NULL)
+    public function get_all_data_logistik(array $where = NULL, array $like = NULL)
     {
     	if ($where) $this->db->where($where);
+    	if ($like) $this->db->like($like);
     	return $this->db
     		->select('l.*, r.*, p.nama_paket, pg.nama_pengiriman')
     		->from('logistik l')

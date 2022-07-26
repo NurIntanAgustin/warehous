@@ -482,4 +482,63 @@ class Admin extends CI_Controller
 
 		redirect('admin/data_link');
 	}
+
+	function cari($search_by)
+	{
+		try {
+			// like condition
+			$filters = array();
+
+			// keyword to search
+			$keyword = $this->input->post('keyword');
+			switch ($search_by) {
+				// menu Data Barang
+				case 'resi':
+					if ($keyword != NULL) $filters['r.resi'] = $keyword;
+					$data['list'] = $this->rm->get_all_data_resi(NULL, $filters ?? NULL);
+					$load_view = 'admin/cari/tabel_barang';
+					break;
+				case 'ekspedisi':
+					if ($keyword != NULL) $filters['pg.nama_pengiriman'] = $keyword;
+					$data['list'] = $this->rm->get_all_data_resi(NULL, $filters ?? NULL);
+					$load_view = 'admin/cari/tabel_barang';
+					break;
+				// menu Data Pengiriman
+				case 'status_pengiriman':
+					if ($keyword != NULL) $filters['l.status'] = $keyword;
+					$data['list'] = $this->lm->get_all_data_logistik(NULL, $filters ?? NULL);
+					$load_view = 'admin/cari/tabel_pengiriman';
+					break;
+				case 'resi_barang':
+					if ($keyword != NULL) $filters['r.resi'] = $keyword;
+					$data['list'] = $this->lm->get_all_data_logistik(NULL, $filters ?? NULL);
+					$load_view = 'admin/cari/tabel_pengiriman';
+					break;
+				case 'resi_pengiriman':
+					if ($keyword != NULL) $filters['l.resi_pengiriman'] = $keyword;
+					$data['list'] = $this->lm->get_all_data_logistik(NULL, $filters ?? NULL);
+					$load_view = 'admin/cari/tabel_pengiriman';
+					break;
+				// menu Data Transaksi
+				case 'status_tagihan':
+					if ($keyword != NULL) $filters['tg.status_tf'] = $keyword;
+					$data['list'] = $this->tgm->get_all_data_tagihan(NULL, $filters ?? NULL);
+					$load_view = 'admin/cari/tabel_tagihan';
+					break;
+				case 'resi_barang_tagihan':
+					if ($keyword != NULL) $filters['r.resi'] = $keyword;
+					$data['list'] = $this->tgm->get_all_data_tagihan(NULL, $filters ?? NULL);
+					$load_view = 'admin/cari/tabel_tagihan';
+					break;
+				default:
+					throw new Exception('Cannot search by '.$search_by, 400);
+					break;
+			}
+			
+			$this->load->view($load_view, $data, FALSE);
+		} catch (Exception $e) {
+			http_response_code($e->getCode() ?: 400);
+			echo json_encode($e->getMessage() ?: 'Unknown error encountered');
+		}
+	}
 }

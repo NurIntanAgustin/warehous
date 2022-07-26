@@ -3,10 +3,10 @@
 class TagihanModel extends CI_Model
 {
 
-    public function get_all_data_tagihan($where = NULL)
+    public function get_all_data_tagihan(array $where = NULL, array $like = NULL)
     {
         if ($where) $this->db->where($where);
-
+        if ($like) $this->db->like($like);
         return $this->db
         	->select('tg.*, l.*, r.*, t.*, f.*, lk.*, p.nama_paket, pg.nama_pengiriman')
 	        ->from('tagihan tg')

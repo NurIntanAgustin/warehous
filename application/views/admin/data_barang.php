@@ -185,38 +185,59 @@
                     </div>
 
                     <hr class="mb-4">
-                    <table class="table mt-5">
-                        <thead>
-                            <tr>
-                                <th scope="col">No</th>
-                                <th scope="col">Pemilik</th>
-                                <th scope="col">Nama Barang</th>
-                                <th scope="col">Jumlah</th>
-                                <th scope="col">Resi</th>
-                                <th scope="col">Tanggal Kirim</th>
-                                <th scope="col">Paket</th>
-                                <th scope="col">Ekspedisi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            foreach ($allresi as $no => $resi) {
-                            ?>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Cari Kategori:
+                                <span id="search_category"></span>
+                            </button>
+                            <div class="search-category-itemlist dropdown-menu">
+                                <a class="search-category-item dropdown-item" data-search_by="ekspedisi">Ekspedisi</a>
+                                <a class="search-category-item dropdown-item" data-search_by="resi">Nomor Resi</a>
+                            </div>
+                        </div>
+                        <input type="text" id='search_keyword' class="form-control bg-light border-0 small" placeholder="cari berdasarkan" aria-label="Search" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-dark" type="button">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="tabel_barang" class="table-responsive">
+                        <table class="table mt-5">
+                            <thead>
                                 <tr>
-                                    <th scope="row"><?= $no + 1 ?></th>
-                                    <td value="<?= $resi['user_id']; ?>"><?= $resi['nama']; ?></td>
-                                    <td><?= $resi['nama_barang']; ?></td>
-                                    <td><?= $resi['jumlah_barang']; ?></td>
-                                    <td><?= $resi['resi']; ?></td>
-                                    <td><?= $resi['tgl_kirim']; ?></td>
-                                    <td value="<?= $resi['paket_id']; ?>"><?= $resi['nama_paket']; ?></td>
-                                    <td value="<?= $resi['pengiriman_id']; ?>"><?= $resi['nama_pengiriman']; ?></td>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Pemilik</th>
+                                    <th scope="col">Nama Barang</th>
+                                    <th scope="col">Jumlah</th>
+                                    <th scope="col">Resi</th>
+                                    <th scope="col">Tanggal Kirim</th>
+                                    <th scope="col">Paket</th>
+                                    <th scope="col">Ekspedisi</th>
                                 </tr>
-                            <?php
-                            }
-                            ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php
+                                foreach ($allresi as $no => $resi) {
+                                ?>
+                                    <tr>
+                                        <th scope="row"><?= $no + 1 ?></th>
+                                        <td value="<?= $resi['user_id']; ?>"><?= $resi['nama']; ?></td>
+                                        <td><?= $resi['nama_barang']; ?></td>
+                                        <td><?= $resi['jumlah_barang']; ?></td>
+                                        <td><?= $resi['resi']; ?></td>
+                                        <td><?= $resi['tgl_kirim']; ?></td>
+                                        <td value="<?= $resi['paket_id']; ?>"><?= $resi['nama_paket']; ?></td>
+                                        <td value="<?= $resi['pengiriman_id']; ?>"><?= $resi['nama_pengiriman']; ?></td>
+                                    </tr>
+                                <?php
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
                 <!-- /.container-fluid -->
@@ -265,6 +286,7 @@
         </div>
     </div>
 
+    <input type="hidden" name="base_url" value="<?= base_url(); ?>">
     <!-- Bootstrap core JavaScript-->
     <script src="<?= base_url() ?>assets/admin/vendor/jquery/jquery.min.js"></script>
     <script src="<?= base_url() ?>assets/admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -281,7 +303,34 @@
     <!-- Page level custom scripts -->
     <script src="<?= base_url() ?>assets/admin/js/demo/chart-area-demo.js"></script>
     <script src="<?= base_url() ?>assets/admin/js/demo/chart-pie-demo.js"></script>
+    <script type="text/javascript">
+        var search_by,
+            base_url = $("[name='base_url']").val();
+        
+        $(document).on('click', '.search-category-item', function() {
+            search_by = $(this).data('search_by').toLowerCase();
+            $('span#search_category').html($(this).text());
+            $('#search_keyword').select().focus();
+        });
 
+        $(document).on('keypress', '#search_keyword', function(event) {
+            if (event.code.toLowerCase() == 'enter' && search_by != undefined) {
+                let search_keyword = $(this).val();
+
+                $.ajax({
+                    url: base_url + 'admin/cari/' + search_by,
+                    type: 'POST',
+                    data: { 'keyword': search_keyword },
+                    success: function(resp){
+                        $('#tabel_barang').html(resp);
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
+            }
+        })
+    </script>
 </body>
 
 </html>

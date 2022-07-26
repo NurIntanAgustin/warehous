@@ -43,7 +43,7 @@
 										<h5 class="card-title">BOX <?= $tagihan['box']; ?> <?= $tagihan['nama_pengiriman']; ?> - <?= $tagihan['nama_paket']; ?></h5>
 									</div>
 									<div class="col text-right">
-										<p class="card-text">Rp<?= number_format($tagihan['jumlah'],2,',','.'); ?></p>
+										<p class="card-text">Rp<?= number_format($tagihan['jumlah'] ?: 0, 0,',','.'); ?></p>
 									</div>
 								</div>
 							</div>
@@ -99,7 +99,7 @@
 										<h5 class="card-title">BOX <?= $tagihan['box']; ?> <?= $tagihan['nama_pengiriman']; ?> - <?= $tagihan['nama_paket']; ?></h5>
 									</div>
 									<div class="col text-right">
-										<p class="card-text">Rp<?= number_format($tagihan['jumlah'],2,',','.'); ?></p>
+										<p class="card-text">Rp<?= number_format($tagihan['jumlah'] ?: 0, 0,',','.'); ?></p>
 									</div>
 								</div>
 							</div>
