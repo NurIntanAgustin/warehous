@@ -190,47 +190,48 @@
                         </div>
                     </div>
 
-                    <table class="table mt-3">
-                        <thead>
-                            <tr>
-                                <th scope="col">No</th>
-                                <th scope="col">Resi</th>
-                                <th scope="col">Berat</th>
-                                <th scope="col">Tarif Kirim<br>dan Pajak</th>
-                                <th scope="col">Tarif<br>Warehouse</th>
-                                <th scope="col">Jumlah</th>
-                                <th scope="col">Bukti</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Link</th>
-                                <th scope="col">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            foreach ($alltagihan as $no => $tagihan) {
-                            ?>
+                    <div class="table-responsive">
+                        <table class="table mt-3">
+                            <thead>
                                 <tr>
-                                    <th scope="row"><?= $no + 1 ?></th>
-                                    <td><?= $tagihan['resi']; ?></td>
-                                    <td><?= $tagihan['berat']; ?></td>
-                                    <td>Rp<?= number_format($tagihan['tarif'],0,',','.'); ?></td>
-                                    <td>Rp<?= number_format($tagihan['fee'],0,',','.'); ?></td>
-                                    <td>Rp<?= number_format($tagihan['jumlah'],0,',','.'); ?></td>
-                                    <td><?= $tagihan['bukti_tf']; ?></td>
-                                    <td><?= $tagihan['status_tf']; ?></td>
-                                    <td><?= $tagihan['link']; ?></td>
-                                    <td>
-                                        <a href="<?= base_url('admin/tagihan_edit/' . $tagihan['tagihan_id']) ?>" class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="<?= base_url('admin/tagihan_hapus/' . $tagihan['tagihan_id']) ?>" class="btn btn-danger btn-sm">Hapus</a>
-                                        <a href="<?= base_url('admin/tagihan_print/' . $tagihan['tagihan_id']) ?>" class="btn btn-success btn-sm">Print</a>
-                                    </td>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Resi</th>
+                                    <th scope="col">Berat</th>
+                                    <th scope="col">Tarif Kirim<br>dan Pajak</th>
+                                    <th scope="col">Tarif<br>Warehouse</th>
+                                    <th scope="col">Jumlah</th>
+                                    <th scope="col">Bukti</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Link</th>
+                                    <th scope="col">Aksi</th>
                                 </tr>
-                            <?php
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-
+                            </thead>
+                            <tbody>
+                                <?php
+                                foreach ($alltagihan as $no => $tagihan) {
+                                ?>
+                                    <tr>
+                                        <th scope="row"><?= $no + 1 ?></th>
+                                        <td><?= $tagihan['resi']; ?></td>
+                                        <td><?= $tagihan['berat']; ?></td>
+                                        <td>Rp <?= number_format($tagihan['tarif'] ?: 0, 0, ',', '.') ?></td>
+                                        <td>Rp <?= number_format($tagihan['fee'] ?: 0, 0, ',', '.') ?></td>
+                                        <td>Rp <?= number_format($tagihan['jumlah'] ?: 0, 0, ',', '.') ?></td>
+                                        <td><a href="#" data-toggle="modal" data-target="#previewImageModal"><?= $tagihan['bukti_tf']; ?></a></td>
+                                        <td><?= $tagihan['status_tf']; ?></td>
+                                        <td><?= $tagihan['link']; ?></td>
+                                        <td>
+                                            <a href="<?= base_url('admin/tagihan_edit/' . $tagihan['tagihan_id']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                                            <a href="<?= base_url('admin/tagihan_hapus/' . $tagihan['tagihan_id']) ?>" class="btn btn-danger btn-sm">Hapus</a>
+                                            <a href="<?= base_url('admin/tagihan_print/' . $tagihan['tagihan_id']) ?>" class="btn btn-success btn-sm">Print</a>
+                                        </td>
+                                    </tr>
+                                <?php
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.container-fluid -->
 
@@ -274,6 +275,16 @@
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <a class="btn btn-primary" href="login.html">Logout</a>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal image -->
+    <div class="modal fade" id="previewImageModal" tabindex="-1" role="dialog" aria-labelledby="previewImageModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <img src="<?= base_url('assets/img/activity/bukti_transfer_konsumen/bukti_tf_557713110995.png') ?>">
             </div>
         </div>
     </div>

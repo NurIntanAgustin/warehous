@@ -78,8 +78,9 @@ class Admin extends CI_Controller
     public function logistik_edit($log_id)
 	{
 		$data['title'] = "Edit Pengiriman";
-        $data['allresi'] = $this->rm->get_all_data_resi();
-		$data['logistik'] = $this->db->get_where('logistik', ['log_id' => $log_id])->row_array();
+        $data['resi_list'] = $this->rm->resi_get_list();
+		// $data['logistik'] = $this->db->get_where('logistik', ['log_id' => $log_id])->row_array();
+		$data['logistik'] = $this->lm->get_all_data_logistik(array('l.log_id' => $log_id))[0];
         $data['user'] = $this->user;
 
 		$this->load->view('admin/logistik_edit', $data);
@@ -87,15 +88,41 @@ class Admin extends CI_Controller
 
 	public function editlogistik()
 	{
+		try {
+			$log_id = $this->input->post('logistik_id');
 
-		$this->db->set('resi_id', $this->input->post('resi_id'));
-		$this->db->set('box', $this->input->post('box'));
-		$this->db->set('resi_pengiriman', $this->input->post('resi_pengiriman'));
-		$this->db->set('status', $this->input->post('status'));
-        $this->db->set('gambar_arrived_kr', $this->input->post('gambar_arrived_kr'));
-		$this->db->set('gambar_arrived_ina', $this->input->post('gambar_arrived_ina'));
-		$this->db->where('log_id', $this->input->post('log_id'));
-		$this->db->update('logistik');
+			$config['upload_path'] = 'assets/img/activity/';
+			$config['allowed_types'] = 'gif|jpg|png';
+			$config['max_size']  = '2000'; // +- 2MB
+			$config['overwrite'] = TRUE;
+
+			$field_image_list = array('gambar_arrived_kr', 'gambar_arrived_ina');
+
+			// check each image fields if any image need to be uploaded
+			foreach ($field_image_list as $list) {
+				// continue loop if no image to upload selected
+				if (empty($_FILES[$list]['tmp_name'])) continue;
+				$config['file_name'] = str_replace('gambar_', '', "log-{$log_id}_{$list}");;
+				$this->load->library('upload', $config);
+				if (!$this->upload->do_upload($list)){
+					$error = array('error' => $this->upload->display_errors());
+					throw new Exception('Gagal upload gambar: '.$error);
+				}
+				else {
+					$uploaded_image = array('upload_data' => $this->upload->data());
+					$this->db->set($list, $uploaded_image['upload_data']['file_name']);
+				}
+			}
+			
+			$this->db->set('resi_id', $this->input->post('resi_id'));
+			$this->db->set('box', $this->input->post('box'));
+			$this->db->set('resi_pengiriman', $this->input->post('resi_pengiriman'));
+			$this->db->set('status', $this->input->post('status'));
+			$this->db->where('log_id', $log_id);
+			$this->db->update('logistik');
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		}
 
 		redirect('admin/data_logistik');
 	}
@@ -153,21 +180,35 @@ class Admin extends CI_Controller
 
     public function tagihan_edit($tagihan_id)
 	{
-		$data['title'] = "Edit Transaksi";
-		$data['tagihan'] = $this->db->get_where('tagihan', ['tagihan_id' => $tagihan_id])->row_array();
-        $data['user'] = $this->user;
+		try {
+			$data['title'] = "Edit Transaksi";
+			$data['resi_list'] = $this->rm->resi_get_list();
+			$data['fee_warehouse_list'] = $this->fm->get_all_data_fee();
+			$data['tarif_pajak_list'] = $this->tm->get_all_data_tarif();
+			$data['link_checkout_list'] = $this->lkm->get_all_data_link();
 
+			$tagihan_list = $this->tgm->get_all_data_tagihan(array('tg.tagihan_id' => $tagihan_id));
+			if (count($tagihan_list) < 1) throw new Exception('Tidak ada tagihan dengan data tersebut', 404);
+			$data['tagihan'] = $tagihan_list[0];
+
+			// $data['tagihan'] = $this->db->get_where('tagihan', ['tagihan_id' => $tagihan_id])->row_array();
+	        $data['user'] = $this->user;
+		} catch (Exception $e) {
+			echo "<pre>";
+			print_r($e->getMessage());
+			echo "</pre>";
+			exit;
+		}
 		$this->load->view('admin/tagihan_edit', $data);
 	}
 
 	public function edittagihan()
 	{
-
-        $this->db->set('log_id', $this->input->post('log_id'));
+        // $this->db->set('log_id', $this->input->post('log_id'));
 		$this->db->set('berat', $this->input->post('berat'));
 		$this->db->set('tarif_id', $this->input->post('tarif_id'));
         $this->db->set('fee_id', $this->input->post('fee_id'));
-        $this->db->set('jumlah', $jumlahtagihan);
+        // $this->db->set('jumlah', $jumlahtagihan);
         $this->db->set('status_tf', $this->input->post('status_tf'));
         $this->db->set('link_id', $this->input->post('link_id'));
 		$this->db->where('tagihan_id', $this->input->post('tagihan_id'));
@@ -185,14 +226,25 @@ class Admin extends CI_Controller
 		redirect('admin/data_tagihan');
 	}
 
-	public function tagihan_print() {  
+	public function tagihan_print($tagihan_id) {
+		try {
+			$data['title'] = "Data Tagihan Konsumen";
+			$data['metode_pembayaran_list'] = $this->mpm->get_all_data_metode();
+			$tagihan_list = $this->tgm->get_all_data_tagihan(array('tg.tagihan_id' => $tagihan_id));
+			if (count($tagihan_list) < 1) throw new Exception('Tidak ada tagihan dengan id tersebut');
+			$data['tagihan'] = $tagihan_list[0];
+			/* $data['tagihan'] = $this->tgm->get_all_data_tagihan();
+			$data['alllogistik'] = $this->lm->get_all_data_logistik();
+			$data['alltarif'] = $this->tm->get_all_data_tarif();
+			$data['allfee'] = $this->fm->get_all_data_fee();
+			$data['alllink'] = $this->lkm->get_all_data_link();*/
+		} catch (Exception $e) {
+			echo "<pre>";
+			print_r($e->getMessage());
+			echo "</pre>";
+			exit;
+		}
 
-	   $data['title'] = "Data Tagihan Konsumen";
-	   $data['tagihan'] = $this->tgm->get_all_data_tagihan();
-	   $data['alllogistik'] = $this->lm->get_all_data_logistik();
-	   $data['alltarif'] = $this->tm->get_all_data_tarif();
-	   $data['allfee'] = $this->fm->get_all_data_fee();
-	   $data['alllink'] = $this->lkm->get_all_data_link();
 	   $this->load->view('admin/tagihan_print', $data);
 	   
 	}

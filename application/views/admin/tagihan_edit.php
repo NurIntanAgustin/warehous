@@ -187,18 +187,15 @@
                     </div>
                     <hr class="mb-2">
                     <div class="mt-4">
-                        <form action="<?= base_url('admin/edittagihan'); ?>" method="POST">
+                        <?= form_open(base_url('admin/edittagihan'), '', ''); ?>
                         <input type="hidden" name="tagihan_id" value="<?= $tagihan['tagihan_id'] ?>"> <div class="mb-3">
                             <div class="mb-3">
-                            <label for="logistik_id">Resi</label>
-								<select class="form-control" name="log_id" aria-label="Default select example">
+                            <label for="resi_id">Resi</label>
+								<select class="form-control" name="resi_id" aria-label="Default select example">
                                 <option selected>-- Pilih Resi --</option>
-
-                                    <?php foreach ($alllogistik as $key => $logistik) { ?>
-
-                                        <option value="<?= $logistik['log_id'] ?>"><?= $logistik['resi'] ?></option>
-                                    <?php } ?>
-
+                                    <?php foreach ($resi_list as $list): ?>
+                                        <option value="<?= $list['resi_id'] ?>" <?= $tagihan['resi'] == $list['resi'] ? 'selected':NULL; ?> ><?= $list['resi'] ?></option>
+                                    <?php endforeach ?>
 								</select>
                             </div>
                             <div class="mb-3">
@@ -209,46 +206,35 @@
                             <label for="tarif_id">Tarif Kirim dan Pajak</label>
 								<select class="form-control" name="tarif_id" aria-label="Default select example">
                                 <option selected>-- Pilih Tarif --</option>
-
-                                    <?php foreach ($alltarif as $key => $tarif) { ?>
-
-                                        <option value="<?= $tarif['tarif_id'] ?>"><?= $tarif['keterangan'] ?> - Rp<?= number_format($tarif['tarif'],0,',','.'); ?></option>
+                                    <?php foreach ($tarif_pajak_list as $key => $tarif) { ?>
+                                        <option value="<?= $tarif['tarif_id'] ?>" <?= $tarif['tarif_id'] == $tagihan['tarif_id'] ? 'selected':NULL; ?> ><?= $tarif['keterangan'] ?> - Rp<?= number_format($tarif['tarif'],0,',','.'); ?></option>
                                     <?php } ?>
-
 								</select>
                             </div>
                             <div class="mb-3">
                             <label for="fee_id">Tarif Warehouse</label>
 								<select class="form-control" name="fee_id" aria-label="Default select example">
                                 <option selected>-- Pilih Tarif --</option>
-
-                                    <?php foreach ($allfee as $key => $fee) { ?>
-
-                                        <option value="<?= $fee['fee_id'] ?>"><?= $fee['keterangan'] ?> - Rp<?= number_format($fee['fee'],0,',','.'); ?></option>
+                                    <?php foreach ($fee_warehouse_list as $key => $fee) { ?>
+                                        <option value="<?= $fee['fee_id'] ?>" <?= $fee['fee_id'] == $tagihan['fee_id'] ? 'selected':NULL; ?> ><?= $fee['keterangan'] ?> - Rp<?= number_format($fee['fee'],0,',','.'); ?></option>
                                     <?php } ?>
-
 								</select>
                             </div>
                             <input type="hidden" name="bukti_tf" value=""> <div class="mb-3">
                             <div class="mb-3">
                             <label for="status_tf">Status</label>
 								<select class="form-control" name="status_tf" aria-label="Default select example">
-                                <option selected><?= $tagihan['status_tf'] ?></option>
-                                <option>-- Pilih Status --</option>
-                                <option>Pembayaran Berhasil</option>
-                                <option>Pembayaran Belum Diterima</option>
+                                <option value="Pembayaran Berhasil" <?= strtolower($tagihan['status_tf']) == strtolower('Pembayaran Berhasil') ? 'selected':NULL; ?> >Pembayaran Berhasil</option>
+                                <option value="Pembayaran Belum Diterima" <?= strtolower($tagihan['status_tf']) == strtolower('Pembayaran Belum Diterima') ? 'selected':NULL; ?> >Pembayaran Belum Diterima</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                             <label for="link_id">Link Checkout</label>
 								<select class="form-control" name="link_id" aria-label="Default select example">
                                 <option selected>-- Pilih Link --</option>
-
-                                    <?php foreach ($alllink as $key => $link) { ?>
-
-                                        <option value="<?= $link['link_id'] ?>"><?= $link['keterangan'] ?> - <?= $link['link'] ?></option>
+                                    <?php foreach ($link_checkout_list as $key => $link) { ?>
+                                        <option value="<?= $link['link_id'] ?>" <?= $link['link_id'] == $tagihan['link_id'] ? 'selected':NULL; ?> ><?= $link['keterangan'] ?> - <?= $link['link'] ?></option>
                                     <?php } ?>
-
 								</select>
                             </div>
                             <div class="mb-3">

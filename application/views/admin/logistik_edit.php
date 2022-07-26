@@ -187,17 +187,13 @@
                     </div>
                     <hr class="mb-2">
                     <div class="mt-4">
-                        <form action="<?= base_url('admin/editlogistik'); ?>" method="POST">
+                        <?= form_open_multipart(base_url('admin/editlogistik'), '', array('logistik_id' => $logistik['log_id'])); ?>
                             <div class="mb-3">
                             <label for="resi_id">Resi Barang</label>
 								<select class="form-control" name="resi_id" aria-label="Default select example">
-                                <option selected value="<?= $logistik['resi_id'] ?>"><?= $logistik['resi'] ?></option>
-
-                                    <?php foreach ($allresi as $key => $resi) { ?>
-
-                                        <option value="<?= $resi['resi_id'] ?>"><?= $resi['resi'] ?></option>
+                                    <?php foreach ($resi_list as $key => $resi) { ?>
+                                        <option value="<?= $resi['resi_id'] ?>" <?= $resi['resi'] == $logistik['resi'] ? 'selected':NULL; ?> ><?= $resi['resi'] ?></option>
                                     <?php } ?>
-
 								</select>
                             </div>
                             <div class="mb-3">
@@ -210,15 +206,31 @@
                             </div>
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Status</label>
-                                <input type="text" name="status"class="form-control" id="exampleFormControlInput1" placeholder="Status" value="<?= $logistik['status'] ?>">
+                                <select class="form-control" name="status" aria-label="Default select example">
+                                    <option <?= strtolower($logistik['status']) == strtolower('Tiba Di Warehouse Korea') ? 'selected':NULL; ?> value="Tiba di Warehouse Korea">Tiba di Warehouse Korea</option>
+                                    <option <?= strtolower($logistik['status']) == strtolower('Dalam Pengiriman ke Indonesia') ? 'selected':NULL; ?> value="Dalam Pengiriman ke Indonesia">Dalam Pengiriman ke Indonesia</option>
+                                    <option <?= strtolower($logistik['status']) == strtolower('Tiba di Bea Cukai') ? 'selected':NULL; ?> value="Tiba di Bea Cukai">Tiba di Bea Cukai</option>
+                                    <option <?= strtolower($logistik['status']) == strtolower('Tiba di Warehouse Indonesia') ? 'selected':NULL; ?> value="Tiba di Warehouse Indonesia">Tiba di Warehouse Indonesia</option>
+                                </select>
+                                <!-- <input type="text" name="status"class="form-control" id="exampleFormControlInput1" placeholder="Status" value="<?= $logistik['status'] ?>"> -->
                             </div>
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Warehouse Korea</label>
-                                <input type="file" id="gambar_arrived_kr" name="gambar_arrived_kr" class="form-control" id="exampleFormControlInput1" value="<?= $logistik['gambar_arrived_kr']; ?>">
+                                <?php if (!empty($logistik['gambar_arrived_kr'])): ?>
+                                    <br>
+                                    <img width='70%' src="<?= base_url('assets/img/activity/'.$logistik['gambar_arrived_kr']) ?>">
+                                    <br>
+                                <?php endif ?>
+                                <input type="file" id="gambar_arrived_kr" name="gambar_arrived_kr" class="form-control" id="exampleFormControlInput1" value="<?= $logistik['gambar_arrived_kr']; ?>" style='margin-top:5px;'>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Warehouse Indonesia</label>
-                                <input type="file" id="gambar_arrived_ina" name="gambar_arrived_ina" class="form-control" id="exampleFormControlInput1" value="<?= $logistik['gambar_arrived_ina']; ?>">
+                                <?php if (!empty($logistik['gambar_arrived_ina'])): ?>
+                                    <br>
+                                    <img width='70%' src="<?= base_url('assets/img/activity/'.$logistik['gambar_arrived_ina']) ?>">
+                                    <br>
+                                <?php endif ?>
+                                <input type="file" id="gambar_arrived_ina" name="gambar_arrived_ina" class="form-control" id="exampleFormControlInput1" value="<?= $logistik['gambar_arrived_ina']; ?>" style='margin-top:5px;'>
                             </div>
                             <div class="mb-3">
                                 <button type="submit" class="btn btn-dark">Simpan</button>
