@@ -206,7 +206,10 @@
                     
                     <div class="row mt-3">
                         <div class="col-3">
-                            <a href="<?= base_url('admin/tagihan_create') ?>" class="btn btn-primary btn-sm">Tambah Data</a>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <a href="<?= base_url('admin/tagihan_create') ?>" class="btn btn-primary btn-sm">Tambah Data</a>
+                                <a href="<?= base_url('admin/cetak_laporan') ?>" class="btn btn-success btn-sm">Cetak Laporan</a>
+                            </div>
                         </div>
                     </div>
 

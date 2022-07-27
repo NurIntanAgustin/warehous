@@ -8,7 +8,7 @@ class TagihanModel extends CI_Model
         if ($where) $this->db->where($where);
         if ($like) $this->db->like($like);
         return $this->db
-        	->select('tg.*, l.*, r.*, t.*, f.*, lk.*, p.nama_paket, pg.nama_pengiriman')
+        	->select('tg.*, l.*, r.*, t.*, f.*, lk.*, p.nama_paket, pg.nama_pengiriman, tg.created_at as tanggal_tagihan')
 	        ->from('tagihan tg')
 	        ->join('logistik l', 'l.log_id = tg.log_id')
 	        ->join('resi r', 'r.resi_id = l.resi_id')

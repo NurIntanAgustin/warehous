@@ -249,6 +249,20 @@ class Admin extends CI_Controller
 	   
 	}
 
+	// cetak laporan transaksi bulanan
+	public function cetak_laporan() {
+		try {
+			$data['tagihan_list'] = $this->tgm->get_all_data_tagihan(array('MONTH(tg.created_at)' => date('m')));
+			$data['metode_pembayaran_list'] = $this->mpm->get_all_data_metode();
+		} catch (Exception $e) {
+			echo "<pre>";
+			print_r($e->getMessage());
+			echo "</pre>";
+			exit;
+		}
+		$this->load->view('admin/tagihan_bulanan_print', $data);
+	}
+
     public function tarif()
     {
         $data['title'] = "Tarif Kirim dan Pajak";
