@@ -37,6 +37,13 @@
         h1, h2 {
         text-align: center;
         }
+
+        @media print {
+        	h1, h2 {
+        		text-align: center;
+        	}
+        	.table td, .table th { padding: 0px; }
+        }
     </style>
 </head>
 
@@ -46,101 +53,39 @@
     <?php if (count($tagihan_list) < 1): ?>
     	Tidak ada data yang dapat ditampilkan
     <?php else: ?>
-    	<?php foreach ($tagihan_list as $key => $tagihan): ?>
-			<div class="card mt-3" style="max-width: 800px; margin: auto;">
-			    <div class="card-header">
-			        <h5 class="card-title">No Resi : <?= $tagihan['resi']; ?></h5>
-			    </div>
-			    <div class="card-body">
-				    <div class="row mb-2">
-						<div class="col">
-								Nama Barang 
-						</div>
-						<div class="col text-right">
-				                <?= $tagihan['nama_barang']; ?>
-						</div>
-					</div>
-				    <div class="row mb-2">
-						<div class="col">
-								Box 
-						</div>
-						<div class="col text-right">
-				        <?= $tagihan['box']; ?> <?= $tagihan['nama_pengiriman']; ?> - <?= $tagihan['nama_paket']; ?>
-						</div>
-					</div>
-				    <div class="row mb-2">
-						<div class="col">
-								Tarif Kirim dan Pajak
-						</div>
-						<div class="col text-right">
-							Rp <?= number_format($tagihan['tarif'] ?: 0, 0,',','.'); ?>/gr
-						</div>
-					</div>
-				    <div class="row mb-2">
-						<div class="col">
-								Fee Warehouse 
-						</div>
-						<div class="col text-right">
-							Rp <?= number_format($tagihan['fee'] ?: 0, 0,',','.'); ?>
-						</div>
-					</div>
-				    <div class="row mb-2">
-						<div class="col">
-								Berat Barang 
-						</div>
-						<div class="col text-right">
-				                <?= $tagihan['berat']; ?> gr
-						</div>
-					</div>
-				    <div class="row mb-2">
-						<div class="col">
-								Jumlah Yang Harus Dibayar 
-						</div>
-						<div class="col text-right">
-				            Rp <?= number_format($tagihan['jumlah'] ?: 0, 0,',','.'); ?>
-						</div>
-					</div>
-				    <div class="row mb-2">
-						<div class="col">
-								Status Pembayaran 
-						</div>
-						<div class="col text-right">
-						<?= $tagihan['status_tf']; ?>
-						</div>
-					</div>
-				    <div class="row mb-2">
-						<div class="col">
-								Link Shopee 
-						</div>
-						<div class="col text-right">
-				            <a href="<?= $tagihan['link']; ?>"><?= $tagihan['link']; ?></a>
-						</div>
-					</div>
-					<div class="row mb-2">
-						<div class="col">
-							Metode Pembayaran
-						</div>
-						<div class="col text-right">
-				            <?php foreach ($metode_pembayaran_list as $list): ?>
-				            	<?= "{$list['metode_pembayaran']} {$list['no_rek']} {$list['pemilik']}" ?>
-				            	<br>
-				            <?php endforeach ?>
-						</div>
-					</div>
-				    <div class="row mb-2">
-						<div class="col">
-							Bukti Transfer
-						</div>
-						<div class="col text-right">
-							<?php if ($tagihan['bukti_tf']): ?>
-								<img width="70%" src="<?= base_url('assets/img/activity/bukti_transfer_konsumen/'.$tagihan['bukti_tf']) ?>">
-								<br><br>
-							<?php endif ?>
-						</div>
-					</div>
-				</div>
-			</div>    	
-	    <?php endforeach ?>
+    	<table class="table mt-3">
+    		<thead>
+    			<tr>
+    				<th scope="col">No</th>
+	    			<th scope="col">Resi</th>
+	    			<th scope="col">Berat</th>
+	    			<th scope="col">Tanggal Transaksi</th>
+	    			<th scope="col">Tarif Kirim dan Pajak</th>
+	    			<th scope="col">Tarif Warehouse</th>
+	    			<th scope="col">Jumlah</th>
+	    		</tr>
+	    	</thead>
+	    	<tbody>
+		    	<?php $total_jumlah = 0; foreach ($tagihan_list as $no => $tagihan): ?>
+					<tr>
+		                <td scope="row"><?= $no + 1 ?></td>
+		                <td><?= $tagihan['resi']; ?></td>
+		                <td><?= $tagihan['berat']; ?></td>
+		                <td><?= date('d-m-Y H:i', strtotime($tagihan['tanggal_tagihan'])); ?></td>
+		                <td>Rp <?= number_format($tagihan['tarif'] ?: 0, 0, ',', '.') ?></td>
+		                <td>Rp <?= number_format($tagihan['fee'] ?: 0, 0, ',', '.') ?></td>
+		                <td>Rp <?= number_format($tagihan['jumlah'] ?: 0, 0, ',', '.') ?></td>
+		            </tr>
+			    <?php $total_jumlah += (int) $tagihan['jumlah']; endforeach ?>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="6" style="text-align: right;"></td>
+					<td>Rp <?= number_format($total_jumlah ?: 0, 0, ',', '.') ?> </td>
+				</tr>
+			</tfoot>
+	    </table>
+
 	    <script>
 	        window.print();
 	    </script>

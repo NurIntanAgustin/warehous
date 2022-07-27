@@ -17,6 +17,7 @@ class TagihanModel extends CI_Model
 	        ->join('link_checkout lk', 'lk.link_id = tg.link_id')
 	        ->join('jenis_paket p', 'p.paket_id = r.paket_id')
 	        ->join('jenis_pengiriman pg', 'pg.pengiriman_id = r.pengiriman_id')
+            ->order_by('tg.created_at','ASC')
 	        ->get()
 	        ->result_array();
         
