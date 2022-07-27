@@ -34,7 +34,7 @@
 	<link rel="stylesheet" href="<?= base_url() ?>assets/css/responsive.css">
 
     <style>
-        h1, h2 {
+        .page-title {
         text-align: center;
         }
 
@@ -48,8 +48,10 @@
 </head>
 
 <body>
-    <h1>Data Transaksi Konsumen</h1>
-    <h2>Bulan <?= en_month_to_ina(date('n', strtotime($tagihan_list[0]['tanggal_tagihan']))); ?></h2>
+	<span class="page-title">
+	    <h2>Laporan Rekap Data Transaksi Cloudify Warehouse</h2>
+	    <h3>Bulan <?= en_month_to_ina(date('n', strtotime($tagihan_list[0]['tanggal_tagihan']))); ?> Tahun <?= date('Y') ?></h3>
+	</span>
     <?php if (count($tagihan_list) < 1): ?>
     	Tidak ada data yang dapat ditampilkan
     <?php else: ?>
