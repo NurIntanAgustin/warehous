@@ -240,7 +240,7 @@
                                         <td>Rp <?= number_format($tagihan['tarif'] ?: 0, 0, ',', '.') ?></td>
                                         <td>Rp <?= number_format($tagihan['fee'] ?: 0, 0, ',', '.') ?></td>
                                         <td>Rp <?= number_format($tagihan['jumlah'] ?: 0, 0, ',', '.') ?></td>
-                                        <td><a href="#" data-toggle="modal" data-target="#previewImageModal"><?= $tagihan['bukti_tf']; ?></a></td>
+                                        <td><a class="preview-bukti-tf" href="#" data-toggle="modal" data-target="#previewImageModal" data-bukti-tf="<?php echo $tagihan['bukti_tf']; ?>"><?= $tagihan['bukti_tf']; ?></a></td>
                                         <td><?= $tagihan['status_tf']; ?></td>
                                         <td><?= $tagihan['link']; ?></td>
                                         <td>
@@ -303,13 +303,14 @@
     </div>
 
     <input type="hidden" name="base_url" value="<?= base_url(); ?>">
+    <input type="hidden" name="bukti_tf_path" value="<?= base_url('assets/img/activity/bukti_transfer_konsumen/'); ?>">
     
     <!-- modal image -->
     <div class="modal fade" id="previewImageModal" tabindex="-1" role="dialog" aria-labelledby="previewImageModal"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <img src="<?= base_url('assets/img/activity/bukti_transfer_konsumen/bukti_tf_557713110995.png') ?>">
+                <img class="image-bukti-tf">
             </div>
         </div>
     </div>
@@ -358,6 +359,12 @@
                 });
             }
         })
+
+        $(document).on('click', '.preview-bukti-tf', function() {
+            let bukti_tf_path = $("[name='bukti_tf_path']").val();
+            let bukti_tf_image = $(this).data('bukti-tf');
+            $('.image-bukti-tf').attr('src', `${bukti_tf_path}${bukti_tf_image}`);
+        });
     </script>
 </body>
 

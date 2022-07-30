@@ -187,7 +187,7 @@ class Barang extends CI_Controller
         $this->load->view('templates/footer');
     }
 
-    public function detail_status($resi_id)
+    public function detail_status($log_id)
     {
         $data['allstatus'] = $this->lm->get_all_data_logistik();
         $data['user'] = $this->user;
@@ -196,7 +196,7 @@ class Barang extends CI_Controller
         // **
 		// where condition for getting pesanan list
 		$where = array();
-		$where['r.resi_id'] = $resi_id;
+		$where['l.resi_id'] = $log_id;
 
         // **
 		// data to show on page
